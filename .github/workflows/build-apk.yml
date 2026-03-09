@@ -1,7 +1,7 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch:  # Para correrlo manual cuando quieras
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,11 +19,17 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.x'  # O la versión que use el proyecto (checa pubspec.yaml)
+        flutter-version: '3.7.12'  # Prueba esta versión fija (2023-era, compatible con repo viejo). Si falla, baja a '3.3.10' o sube a '3.22.x'
         channel: 'stable'
 
-    - name: Install dependencies
-      run: flutter pub get
+    - name: Clean project
+      run: flutter clean
+
+    - name: Remove old lock file
+      run: rm -f pubspec.lock  # Borra lock para forzar resolución fresca
+
+    - name: Install dependencies (with verbose)
+      run: flutter pub get --verbose
 
     - name: Build APK
       run: flutter build apk --release
